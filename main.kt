@@ -1,4 +1,35 @@
+data class Todo(val id: Int, val description: String, var isCompleted: Boolean = false)
+
+class TodoApp {
+    private val todos = mutableListOf<Todo>()
+    private var nextId = 1
+
+    fun add(description: String) {
+        val todo = Todo(id = nextId++, description = description)
+        todos.add(todo)
+        println("Added: ${todo.description}")
+    }
+
+    fun view() {
+        if (todos.isEmpty()) {
+            println("Todo list is empty.")
+        } else{
+            todos.forEach {
+                val todoStatus = if (it.isCompleted) "Completed" else "Pending"
+                println("${it.id}. ${it.description} - $todoStatus")
+            }
+        }
+    }
+
+    fun complete() {}
+
+    fun remove() {}
+}
+
 fun main() {
+
+    val todoApp = TodoApp()
+
     while (true) {
         println("Welcome to todo app")
         println("1. Add Todo")
@@ -13,12 +44,18 @@ fun main() {
         when (option) {
             "1" -> {
                 println("")
-                println("Enter todo description")
+                print("Enter todo description: ")
+                val description = readLine()?.trim()
+                if (description.isNullOrEmpty()) {
+                    println("Task description cannot be empty")
+                } else{
+                    todoApp.add(description)
+                }
                 println("")
             }
             "2" -> {
                 println("")
-                println("Todos: ...")
+                todoApp.view()
                 println("")
             }
             "3" -> {
