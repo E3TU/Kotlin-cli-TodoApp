@@ -1,4 +1,4 @@
-data class Todo(val id: Int, val description: String, var isCompleted: Boolean = false)
+data class Todo(var id: Int, val description: String, var isCompleted: Boolean = false)
 
 class TodoApp {
     private val todos = mutableListOf<Todo>()
@@ -21,9 +21,36 @@ class TodoApp {
         }
     }
 
-    fun complete() {}
+    fun complete(id: Int) {
+        val todo = todos.find {it.id == id}
+        if (todo != null) {
+            todo.isCompleted = true
+            println("Task ${todo.id} marked as completed!")
+        } else {
+            println("Task with id $id not found.")
+        }
+    }
 
-    fun remove() {}
+    fun remove(id: Int) {
+        val todoIndex = todos.indexOfFirst { it.id == id }
+        if (todoIndex != -1) {
+            val todo = todos.removeAt(todoIndex)
+
+            println("Task ${todo.id} deleted.")
+
+            reassignIds()
+        } else {
+            println("Task with id $id not found.")
+        }
+    }
+
+    private fun reassignIds() {
+        var newId = 1
+        todos.forEach { todo ->
+            todo.id = newId++
+        }
+        nextId = newId
+    }
 }
 
 fun main() {
@@ -60,19 +87,30 @@ fun main() {
             }
             "3" -> {
                 println("")
-                println("Enter todo number to mark as done")
+                print("Enter todo number to mark as done: ")
+                val todoId = readLine()?.toIntOrNull()
+                if (todoId != null) {
+                    todoApp.complete(todoId)
+                } else {
+                    println("Invalid id.")
+                }
                 println("")
             }
             "4" -> {
                 println("")
-                println("Enter todo number to delete")
+                print("Enter todo number to delete: ")
+                val todoId = readLine()?.toIntOrNull()
+                if( todoId != null) {
+                    todoApp.remove(todoId)
+                } else{
+                    println("Invalid id")
+                }
                 println("")
             }
             "5" -> {
                 println("")
-                println("Exiting program")
+                println("Exiting program...")
                 println("")
-
                 break
             }
             else -> {
